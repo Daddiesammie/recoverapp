@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - Cyber Funds Recovery{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto">
+    <h1 class="text-3xl font-bold text-cyber-blue mb-6 text-center animate-pulse">Secure Access Portal</h1>
+    
+    <div class="bg-cyber-dark shadow-lg rounded-lg p-6 border border-cyber-blue animate-[glow_2s_ease-in-out_infinite]">
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            
+            {% for field in form %}
+            <div class="relative">
+                <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-cyber-yellow mb-1">
+                    {{ field.label }}
+                </label>
+                <input type="{{ field.field.widget.input_type }}"
+                       name="{{ field.name }}"
+                       id="{{ field.id_for_label }}"
+                       {% if field.field.required %}required{% endif %}
+                       class="w-full bg-gray-800 text-white border-cyber-blue focus:border-cyber-pink focus:ring-1 focus:ring-cyber-pink rounded-md shadow-sm py-2 px-3 transition duration-300"
+                       {% if field.value %}value="{{ field.value }}"{% endif %}
+                >
+                {% if field.errors %}
+                <div class="mt-1 text-cyber-pink text-sm">
+                    {{ field.errors|join:", " }}
+                </div>
+                {% endif %}
+                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                    <span class="text-cyber-blue opacity-50 animate-[ping_1s_ease-in-out_infinite]">&#9679;</span>
+                </div>
+            </div>
+            {% endfor %}
+
+            {% if form.non_field_errors %}
+            <div class="text-cyber-pink text-sm">
+                {% for error in form.non_field_errors %}
+                    {{ error }}
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <input id="remember_me" name="remember_me" type="checkbox" class="h-4 w-4 text-cyber-blue focus:ring-cyber-pink border-gray-600 rounded">
+                    <label for="remember_me" class="ml-2 block text-sm text-gray-400">
+                        Remember me
+                    </label>
+                </div>
+
+                <div class="text-sm">
+                    <a href="{% url 'password_reset' %}" class="text-cyber-blue hover:text-cyber-pink transition duration-300">
+                        Forgot your password?
+                    </a>
+                </div>
+            </div>
+
+            <div class="flex justify-end">
+                <button type="submit" 
+                        class="bg-gradient-to-r from-cyber-blue to-cyber-pink text-white px-6 py-2 rounded-lg hover:from-cyber-pink hover:to-cyber-blue transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyber-yellow">
+                    Access System
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="mt-6 text-center">
+        <p class="text-sm text-gray-400">
+            Don't have a secure account? 
+            <a href="{% url 'register' %}" class="text-cyber-blue hover:text-cyber-pink transition duration-300">Register Now</a>
+        </p>
+    </div>
+</div>
+
+<style>
+    @keyframes glow {
+        0%, 100% { box-shadow: 0 0 5px #00f3ff, 0 0 10px #00f3ff, 0 0 15px #00f3ff; }
+        50% { box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff; }
+    }
+</style>
+{% endblock %}

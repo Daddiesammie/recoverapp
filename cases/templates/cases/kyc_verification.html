@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}KYC Verification - Cyber Funds Recovery{% endblock %}
+
+{% block content %}
+<div class="flex h-screen bg-cyber-dark">
+  <!-- Sidebar -->
+  <div class="w-64 bg-gray-900 text-white p-6 hidden md:block">
+    <div class="text-2xl font-bold text-cyber-blue mb-8">CyberRecover</div>
+    <nav>
+        <a href="{% url 'cases:dashboard' %}" class="block py-2 px-4 rounded transition duration-200 bg-cyber-blue text-cyber-dark mb-2">Dashboard</a>
+        <a href="{% url 'cases:create_withdrawal' %}" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Withdraw</a>
+        <a href="#" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Contact</a>
+        <a href="{% url 'cases:create_case' %}" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Start New Recovery</a>
+        <a href="#" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Profile</a>
+        <a href="{% url 'logout' %}" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Logout</a>
+    </nav>
+</div>
+
+<!-- Main Content -->
+<div class="flex-1 overflow-y-auto p-6">
+    <div class="max-w-7xl mx-auto">
+        <!-- Mobile Menu Button -->
+        <div class="md:hidden mb-4">
+            <button id="mobile-menu-button" class="text-cyber-blue hover:text-cyber-pink transition duration-200">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-gray-900 text-white p-4 rounded-lg mb-4">
+            <a href="{% url 'cases:dashboard' %}" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Dashboard</a>
+            <a href="{% url 'cases:create_withdrawal' %}" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Withdraw</a>
+            <a href="#" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Contact</a>
+            <a href="{% url 'cases:create_case' %}" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Start New Recovery</a>
+            <a href="#" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Profile</a>
+            <a href="{% url 'logout' %}" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Logout</a>
+        </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 overflow-y-auto p-6">
+        <div class="max-w-2xl mx-auto">
+            <h1 class="text-3xl font-bold text-cyber-blue animate-pulse mb-6">KYC Verification</h1>
+
+            <div class="bg-gray-800 p-6 rounded-lg border border-cyber-pink animate-[glow_4s_ease-in-out_infinite]">
+                <form method="post" enctype="multipart/form-data" id="kycForm">
+                    {% csrf_token %}
+                    <div class="space-y-4">
+                        <div>
+                            <label for="{{ form.document_type.id_for_label }}" class="block text-sm font-medium text-cyber-blue">Document Type</label>
+                            {{ form.document_type }}
+                        </div>
+                        <div>
+                            <label for="{{ form.document_number.id_for_label }}" class="block text-sm font-medium text-cyber-blue">Document Number</label>
+                            {{ form.document_number }}
+                        </div>
+                        <div>
+                            <label for="{{ form.document_image.id_for_label }}" class="block text-sm font-medium text-cyber-blue">Document Image</label>
+                            {{ form.document_image }}
+                        </div>
+                        <div id="imagePreview" class="hidden mt-4">
+                            <img id="preview" src="#" alt="Document Preview" class="max-w-full h-auto rounded-lg border border-cyber-blue">
+                        </div>
+                        <div class="flex justify-end mt-6">
+                            <button type="submit" class="bg-gradient-to-r from-cyber-blue to-cyber-pink text-white px-6 py-2 rounded-lg hover:from-cyber-pink hover:to-cyber-blue transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyber-blue">
+                                Submit Verification
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @keyframes glow {
+        0%, 100% { box-shadow: 0 0 5px #00f3ff, 0 0 10px #00f3ff, 0 0 15px #00f3ff; }
+        50% { box-shadow: 0 0 10px #00f3ff, 0 0 20px #00f3ff, 0 0 30px #00f3ff; }
+    }
+</style>
+<script>
+    document.getElementById('mobile-menu-button').addEventListener('click', function() {
+        var mobileMenu = document.getElementById('mobile-menu');
+        mobileMenu.classList.toggle('hidden');
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const imageInput = document.getElementById('{{ form.document_image.id_for_label }}');
+        const imagePreview = document.getElementById('imagePreview');
+        const preview = document.getElementById('preview');
+
+        imageInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    imagePreview.classList.remove('hidden');
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    });
+</script>
+{% endblock %}

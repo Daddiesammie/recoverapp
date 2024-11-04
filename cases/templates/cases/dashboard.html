@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block title %}Dashboard - Cyber Funds Recovery{% endblock %}
+
+{% block content %}
+<div class="flex h-screen bg-cyber-dark">
+    <!-- Sidebar -->
+    <div class="w-64 bg-gray-900 text-white p-6 hidden md:block">
+        <div class="text-2xl font-bold text-cyber-blue mb-8">CyberRecover</div>
+        <nav>
+            <a href="{% url 'cases:dashboard' %}" class="block py-2 px-4 rounded transition duration-200 bg-cyber-blue text-cyber-dark mb-2">Dashboard</a>
+            <a href="{% url 'cases:create_withdrawal' %}" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Withdraw</a>
+            <a href="#" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Contact</a>
+            <a href="{% url 'cases:create_case' %}" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Start New Recovery</a>
+            <a href="#" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Profile</a>
+            <a href="{% url 'logout' %}" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Logout</a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 overflow-y-auto p-6">
+        <div class="max-w-7xl mx-auto">
+            <!-- Mobile Menu Button -->
+            <div class="md:hidden mb-4">
+                <button id="mobile-menu-button" class="text-cyber-blue hover:text-cyber-pink transition duration-200">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden bg-gray-900 text-white p-4 rounded-lg mb-4">
+                <a href="{% url 'cases:dashboard' %}" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Dashboard</a>
+                <a href="{% url 'cases:create_withdrawal' %}" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Withdraw</a>
+                <a href="#" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Contact</a>
+                <a href="{% url 'cases:create_case' %}" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Start New Recovery</a>
+                <a href="#" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Profile</a>
+                <a href="{% url 'logout' %}" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Logout</a>
+            </div>
+
+            <!-- Header -->
+            <h1 class="text-3xl font-bold text-cyber-blue animate-pulse mb-6">Dashboard</h1>
+
+            <!-- Account Summary Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-gray-800 p-6 rounded-lg border border-cyber-blue animate-[glow_4s_ease-in-out_infinite]">
+                    <h2 class="text-xl font-semibold text-cyber-blue mb-2">Total Recovered</h2>
+                    <p class="text-3xl font-bold text-cyber-green">${{ completed_amount|floatformat:2 }}</p>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-lg border border-cyber-pink animate-[glow_4s_ease-in-out_infinite]">
+                    <h2 class="text-xl font-semibold text-cyber-blue mb-2">Total Withdrawn</h2>
+                    <p class="text-3xl font-bold text-cyber-green">${{ total_withdrawn|floatformat:2 }}</p>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-lg border border-cyber-blue animate-[glow_4s_ease-in-out_infinite]">
+                    <h2 class="text-xl font-semibold text-cyber-blue mb-2">Available Balance</h2>
+                    <p class="text-3xl font-bold text-cyber-green">${{ completed_amount|subtract:total_withdrawn|floatformat:2 }}</p>
+                </div>
+            </div>
+
+               <!-- KYC Verification Section (New) -->
+               <div class="mb-8">
+                <h2 class="text-2xl font-bold text-cyber-blue mb-4">KYC Verification</h2>
+                <div class="bg-gray-800 p-6 rounded-lg border border-cyber-pink animate-[glow_4s_ease-in-out_infinite]">
+                    {% if user.kycverification.is_verified %}
+                        <p class="text-cyber-green mb-4">Your KYC verification is complete.</p>
+                        <div class="flex items-center">
+                            <svg class="w-6 h-6 text-cyber-green mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span class="text-cyber-blue">Verified on: {{ user.kycverification.verification_date|date:"Y-m-d H:i" }}</span>
+                        </div>
+                    {% else %}
+                        <p class="text-cyber-blue mb-4">Complete KYC verification to enable withdrawals.</p>
+                        <a href="{% url 'cases:kyc_verification' %}" 
+                           class="bg-gradient-to-r from-cyber-blue to-cyber-pink text-white px-6 py-2 rounded-lg hover:from-cyber-pink hover:to-cyber-blue transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyber-blue">
+                            Start KYC Verification
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Withdrawal Section -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-cyber-blue mb-4">Withdrawal</h2>
+                <div class="bg-gray-800 p-6 rounded-lg border border-cyber-pink animate-[glow_4s_ease-in-out_infinite]">
+                    <p class="text-cyber-blue mb-4">Available for withdrawal: ${{ completed_amount|subtract:total_withdrawn|floatformat:2 }}</p>
+                    {% if user.kycverification.is_verified %}
+                        <a href="{% url 'cases:create_withdrawal' %}" 
+                           class="bg-gradient-to-r from-cyber-blue to-cyber-pink text-white px-6 py-2 rounded-lg hover:from-cyber-pink hover:to-cyber-blue transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyber-blue">
+                            Request Withdrawal
+                        </a>
+                    {% else %}
+                        <p class="text-cyber-pink mb-4">Complete KYC verification to enable withdrawals.</p>
+                        <a href="{% url 'cases:kyc_verification' %}" 
+                           class="bg-gradient-to-r from-cyber-blue to-cyber-pink text-white px-6 py-2 rounded-lg hover:from-cyber-pink hover:to-cyber-blue transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyber-blue">
+                            Start KYC Verification
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Recent Withdrawals -->
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-cyber-blue mb-4">Recent Withdrawals</h2>
+                <div class="bg-gray-800 rounded-lg border border-cyber-blue animate-[glow_4s_ease-in-out_infinite] overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="border-b border-gray-700">
+                                <th class="p-4 text-cyber-blue">Date</th>
+                                <th class="p-4 text-cyber-blue">Amount</th>
+                                <th class="p-4 text-cyber-blue">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for withdrawal in recent_withdrawals %}
+                            <tr class="border-b border-gray-700 hover:bg-gray-700 transition duration-200">
+                                <td class="p-4 text-cyber-blue">{{ withdrawal.created_at|date:"Y-m-d H:i" }}</td>
+                                <td class="p-4 text-cyber-green">${{ withdrawal.amount|floatformat:2 }}</td>
+                                <td class="p-4">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
+                                        {% if withdrawal.status == 'pending' %}bg-blue-900 text-blue-200
+                                        {% elif withdrawal.status == 'completed' %}bg-green-900 text-green-200
+                                        {% else %}bg-red-900 text-red-200{% endif %}">
+                                        {{ withdrawal.get_status_display }}
+                                    </span>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="p-4 text-center text-gray-400">No recent withdrawals</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Recovery Cases -->
+            <div class="mb-6 flex justify-between items-center">
+                <h2 class="text-2xl font-bold text-cyber-blue">My Recovery Cases</h2>
+                <a href="{% url 'cases:create_case' %}" 
+                   class="bg-gradient-to-r from-cyber-blue to-cyber-pink text-white px-6 py-2 rounded-lg hover:from-cyber-pink hover:to-cyber-blue transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyber-blue">
+                    Start New Recovery
+                </a>
+            </div>
+
+            <div class="bg-gray-800 shadow-lg rounded-lg divide-y divide-gray-700 border border-cyber-blue animate-[glow_4s_ease-in-out_infinite]">
+                {% if cases %}
+                    {% for case in cases %}
+                    <div class="p-6 hover:bg-gray-700 transition duration-300">
+                        <div class="flex items-center justify-between">
+                            <div class="flex flex-col">
+                                <h3 class="text-lg font-medium text-cyber-blue">Case #{{ case.id }} - {{ case.company }}</h3>
+                                <p class="text-sm text-gray-400">Amount: <span class="text-cyber-blue">${{ case.amount_lost }}</span></p>
+                            </div>
+                            <div class="flex flex-col items-end">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
+                                    {% if case.status == 'pending' %}bg-blue-900 text-blue-200
+                                    {% elif case.status == 'reviewing' %}bg-blue-900 text-blue-200
+                                    {% elif case.status == 'approved' %}bg-green-900 text-green-200
+                                    {% elif case.status == 'completed' %}bg-purple-900 text-purple-200
+                                    {% else %}bg-red-900 text-red-200{% endif %}">
+                                    {{ case.status|title }}
+                                </span>
+                                <span class="text-sm text-gray-400 mt-1">{{ case.created_at|date:"M d, Y" }}</span>
+                            </div>
+                        </div>
+                        
+                        {% if case.status == 'approved' %}
+                        <div class="mt-4">
+                            <a href="{% url 'cases:verify' case.pk %}" 
+                               class="text-cyber-pink hover:text-cyber-blue transition duration-300 font-medium">
+                                Proceed to Verification →
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="p-6 text-center text-gray-400">
+                        <p>You haven't submitted any recovery cases yet.</p>
+                        <a href="{% url 'cases:create_case' %}" 
+                           class="text-cyber-blue hover:text-cyber-pink mt-2 inline-block transition duration-300">
+                            Start your first recovery case
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @keyframes glow {
+        0%, 100% { box-shadow: 0 0 5px #00f3ff, 0 0 10px #00f3ff, 0 0 15px #00f3ff; }
+        50% { box-shadow: 0 0 10px #00f3ff, 0 0 20px #00f3ff, 0 0 30px #00f3ff; }
+    }
+</style>
+
+<script>
+    document.getElementById('mobile-menu-button').addEventListener('click', function() {
+        var mobileMenu = document.getElementById('mobile-menu');
+        mobileMenu.classList.toggle('hidden');
+    });
+</script>
+{% endblock %}

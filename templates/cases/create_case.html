@@ -1,0 +1,74 @@
+<!-- templates/cases/create_case.html -->
+{% extends 'base.html' %}
+
+{% block title %}New Recovery Case{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">Submit Recovery Case</h1>
+    
+    <div class="bg-white shadow-sm rounded-lg p-6">
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            
+            <div>
+                <label for="id_company" class="block text-sm font-medium text-gray-700">
+                    Company Name
+                </label>
+                <input type="text" name="company" id="id_company" required
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+            </div>
+
+            <div>
+                <label for="id_amount_lost" class="block text-sm font-medium text-gray-700">
+                    Amount Lost
+                </label>
+                <div class="mt-1 relative rounded-md shadow-sm">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <span class="text-gray-500 sm:text-sm">$</span>
+                    </div>
+                    <input type="number" name="amount_lost" id="id_amount_lost" required
+                           class="pl-7 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                </div>
+            </div>
+
+            <div>
+                <label for="id_payment_method" class="block text-sm font-medium text-gray-700">
+                    Payment Method Used
+                </label>
+                <select name="payment_method" id="id_payment_method" required
+                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <option value="">Select payment method</option>
+                    <option value="crypto">Cryptocurrency</option>
+                    <option value="bank">Bank Transfer</option>
+                    <option value="card">Credit/Debit Card</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="id_wallet_address" class="block text-sm font-medium text-gray-700">
+                    Wallet Address/Account Details
+                </label>
+                <input type="text" name="wallet_address" id="id_wallet_address" required
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+            </div>
+
+            <div>
+                <label for="id_description" class="block text-sm font-medium text-gray-700">
+                    Description of Incident
+                </label>
+                <textarea name="description" id="id_description" rows="4" required
+                          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+            </div>
+
+            <div class="flex justify-end">
+                <button type="submit" 
+                        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                    Submit Case
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

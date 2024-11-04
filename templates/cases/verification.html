@@ -1,0 +1,104 @@
+<!-- templates/cases/verification.html -->
+{% extends 'base.html' %}
+
+{% block title %}Verification Process{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <h1 class="text-2xl font-bold text-gray-900 mb-6">Verification Process</h1>
+    
+    <div class="bg-white shadow-sm rounded-lg p-6">
+        <!-- Progress Steps -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between">
+                {% for step in "123" %}
+                <div class="flex flex-col items-center">
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center
+                        {% if forloop.counter <= current_step %}bg-blue-600 text-white
+                        {% else %}bg-gray-200 text-gray-600{% endif %}">
+                        {{ forloop.counter }}
+                    </div>
+                    <span class="text-sm mt-2">Step {{ forloop.counter }}</span>
+                </div>
+                {% if not forloop.last %}
+                    <div class="flex-1 h-1 bg-gray-200 mx-4"></div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Verification Form -->
+        <form method="post" id="verificationForm" class="space-y-6">
+            {% csrf_token %}
+            <input type="hidden" name="step" value="{{ current_step }}">
+            
+            <div>
+                <label for="verification_code" class="block text-sm font-medium text-gray-700">
+                    Enter Verification Code for Step {{ current_step }}
+                </label>
+                <input type="text" name="code" id="verification_code" required
+                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+            </div>
+
+            <div id="error-message" class="text-red-600 hidden"></div>
+
+            <div class="flex justify-end">
+                <button type="submit" 
+                        class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+                    Verify
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="mt-4 text-center">
+    <button id="requestNewCode" 
+            class="text-blue-600 hover:text-blue-800 underline">
+        Request new code
+    </button>
+</div>
+
+<script>
+// Add this to the existing JavaScript
+document.getElementById('requestNewCode').addEventListener('click', function() {
+    fetch(`/api/case/{{ case.id }}/request-code/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('New verification code has been sent to your email');
+        } else {
+            alert(data.error || 'Failed to request new code');
+        }
+    });
+});
+</script>
+
+<script>
+document.getElementById('verificationForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    fetch(window.location.href, {
+        method: 'POST',
+        body: new FormData(this),
+        headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.reload();
+        } else {
+            document.getElementById('error-message').textContent = 'Invalid verification code';
+            document.getElementById('error-message').classList.remove('hidden');
+        }
+    });
+});
+</script>
+{% endblock %}

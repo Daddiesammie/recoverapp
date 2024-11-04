@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full Landing Page with Tailwind CSS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <style>
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        @keyframes orbit {
+            0% {
+                transform: rotate(0deg) translateX(50px) rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg) translateX(50px) rotate(-360deg);
+            }
+        }
+        .cyber-circle {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin: -10px 0 0 -10px;
+        }
+        .cyber-circle:nth-child(1) {
+            background-color: #ff00ff;
+            animation: orbit 4s linear infinite;
+        }
+        .cyber-circle:nth-child(2) {
+            background-color: #00ffff;
+            animation: orbit 4s linear infinite 1.33s;
+        }
+        .cyber-circle:nth-child(3) {
+            background-color: #ffff00;
+            animation: orbit 4s linear infinite 2.66s;
+        }
+        .cyber-orbit {
+            width: 120px;
+            height: 120px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            position: relative;
+            animation: pulse 2s ease-in-out infinite;
+            z-index: 2;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+    </style>
+</head>
+<body class="font-sans">
+<!-- Add this right after your <body> tag -->
+    <div id="notification-container" class="fixed top-4 right-4 z-50 w-full max-w-sm invisible">
+        <div id="notification" class="flex items-start gap-3 p-4 rounded-lg shadow-lg transform transition-all duration-300 translate-x-full">
+            <!-- Icon -->
+            <div class="flex-shrink-0">
+                <svg class="notification-icon h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <!-- Content -->
+            <div class="flex-1">
+                <h3 id="notification-title" class="text-lg font-semibold"></h3>
+                <p id="notification-message" class="mt-1 text-sm"></p>
+            </div>
+            <!-- Close Button -->
+            <button onclick="closeNotification()" class="flex-shrink-0 ml-4">
+                <svg class="h-5 w-5 text-gray-400 hover:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Preloader -->
+    <div id="preloader" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900">
+        <div id="particles-js"></div>
+        <div class="cyber-orbit">
+            <div class="cyber-circle"></div>
+            <div class="cyber-circle"></div>
+            <div class="cyber-circle"></div>
+        </div>
+    </div>
+
+ 
+
+    <!-- Main Content -->
+    <div id="main-content" class="hidden">
+        <!-- Header -->
+        <header class="bg-white shadow-md fixed top-0 left-0 right-0 z-40">
+            <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+                <div class="text-2xl font-bold text-purple-600">
+                    {% if site_settings.logo %}
+                        <img src="{{ site_settings.logo.url }}" alt="{{ site_settings.site_name }}" class="h-8">
+                    {% else %}
+                        {{ site_settings.site_name }}
+                    {% endif %}
+                </div>
+                <button id="menu-toggle" class="md:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+                <nav id="menu" class="hidden md:block absolute md:relative top-full left-0 right-0 bg-white md:bg-transparent">
+                    <ul class="flex flex-col md:flex-row md:space-x-6 p-4 md:p-0">
+                        <li class="my-2 md:my-0"><a href="#home" class="text-gray-600 hover:text-purple-600 transition duration-300">Home</a></li>
+                        <li class="my-2 md:my-0"><a href="#about" class="text-gray-600 hover:text-purple-600 transition duration-300">About</a></li>
+                        <li class="my-2 md:my-0"><a href="#services" class="text-gray-600 hover:text-purple-600 transition duration-300">Services</a></li>
+                        <li class="my-2 md:my-0"><a href="#contact" class="text-gray-600 hover:text-purple-600 transition duration-300">Contact</a></li>
+                        {% if user.is_authenticated %}
+                    <li class="my-2 md:my-0">
+                        <a href="{% url 'cases:dashboard' %}" class="text-cyber-dark hover:text-white hover:bg-cyber-blue px-3 py-2 rounded-md transition duration-300">Dashboard</a>
+                    </li>
+                    <li class="my-2 md:my-0">
+                        <a href="{% url 'logout' %}" class="text-cyber-dark hover:text-white hover:bg-cyber-pink px-3 py-2 rounded-md transition duration-300">Logout</a>
+                    </li>
+                {% else %}
+                    <li class="my-2 md:my-0">
+                        <a href="{% url 'login' %}" class="text-cyber-dark hover:text-white hover:bg-cyber-blue px-3 py-2 rounded-md transition duration-300">Login</a>
+                    </li>
+                    <li class="my-2 md:my-0">
+                        <a href="{% url 'register' %}" class="text-cyber-dark hover:text-white hover:bg-cyber-pink px-3 py-2 rounded-md transition duration-300">Register</a>
+                    </li>
+                {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Hero section with wavy bottom -->
+        <div id="home" class="relative h-screen overflow-hidden pt-16">
+            <!-- Background image -->
+            <div class="absolute inset-0 bg-cover bg-center z-0" style="background-image: url('{% if site_settings.hero_image %}{{ site_settings.hero_image.url }}{% else %}https://images.unsplash.com/photo-1492571350019-22de08371fd3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2053&q=80{% endif %}');"></div>
+            
+            <!-- Colorful gradient overlay -->
+            <div class="absolute inset-0 bg-gradient-to-br from-purple-500 via-pink-500 to-red-500 opacity-70 z-10"></div>
+            
+            <!-- Content -->
+            <div class="relative z-20 flex items-center justify-center h-full">
+                <div class="text-center px-4">
+                    <h1 class="text-3xl md:text-4xl lg:text-6xl font-bold text-white mb-4">Welcome to Our Website</h1>
+                    <p class="text-lg md:text-xl lg:text-2xl text-white mb-8">Discover amazing things with us</p>
+                    <button class="bg-white text-purple-600 hover:bg-purple-100 font-bold py-2 px-6 rounded-full transition duration-300">
+                        Get Started
+                    </button>
+                </div>
+            </div>
+
+            <!-- Wavy bottom with shadow -->
+            <div class="absolute bottom-0 left-0 right-0 z-30 drop-shadow-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" class="w-full h-auto">
+                    <path fill="#ffffff" fill-opacity="1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+                </svg>
+            </div>
+        </div>
+
+ <!-- About Us Section -->
+ <!-- About Us Section -->
+ <section id="about" class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-8">About Us</h2>
+        <div class="max-w-4xl mx-auto">
+            {{ site_settings.about|safe }}
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+                <div class="text-center">
+                    <div class="text-purple-600 font-bold text-4xl mb-2">95%</div>
+                    <p class="text-gray-600">Success Rate</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-purple-600 font-bold text-4xl mb-2">1000+</div>
+                    <p class="text-gray-600">Cases Resolved</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-purple-600 font-bold text-4xl mb-2">$50M+</div>
+                    <p class="text-gray-600">Funds Recovered</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services Section -->
+<section id="services" class="py-20 bg-gray-100">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12">Our Recovery Services</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="text-purple-600 mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold mb-4">Crypto Recovery</h3>
+                <p>Specialized recovery services for lost or stolen cryptocurrency, including Bitcoin, Ethereum, and other digital assets. We help trace and recover funds from fraudulent transactions.</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="text-purple-600 mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold mb-4">Investment Scam Recovery</h3>
+                <p>Expert assistance in recovering funds lost to fraudulent investment schemes, forex scams, and binary options fraud. We work to track and reclaim your stolen investments.</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <div class="text-purple-600 mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold mb-4">Secure Recovery Process</h3>
+                <p>Our advanced security protocols and expert team ensure a safe and confidential recovery process. We employ cutting-edge technology to protect your information throughout the recovery journey.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+        <!-- How It Works Section -->
+<section class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12">How It Works</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center text-white mx-auto mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Register</h3>
+                <p>Create your account to get started with the funds recovery process.</p>
+            </div>
+            <div class="text-center">
+                <div class="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center text-white mx-auto mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Submit Recovery Case</h3>
+                <p>Provide details about your lost funds and supporting documentation.</p>
+            </div>
+            <div class="text-center">
+                <div class="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center text-white mx-auto mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Verify</h3>
+                <p>Our team will verify your case and confirm fund recovery eligibility.</p>
+            </div>
+            <div class="text-center">
+                <div class="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center text-white mx-auto mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold mb-2">Withdraw Your Funds</h3>
+                <p>Once approved, safely withdraw your recovered funds to your account.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+        <!-- Call to Action Section -->
+        <section class="py-20 bg-purple-600 text-white">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-3xl font-bold mb-4">Ready to Get Started?</h2>
+                <p class="text-xl mb-8">Join us today and experience the difference!</p>
+                <button class="bg-white text-purple-600 hover:bg-purple-100 font-bold py-2 px-6 rounded-full transition duration-300">
+                    Sign Up Now
+                </button>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+<section class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12">What Our Clients Say</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {% for testimonial in testimonials %}
+            <div class="bg-gray-100 p-6 rounded-lg shadow-md flex flex-col md:flex-row items-start gap-6">
+                <!-- Image container with fixed dimensions -->
+                <div class="w-24 h-24 flex-shrink-0">
+                    <img src="{{ testimonial.image.url }}" 
+                         alt="{{ testimonial.name }}" 
+                         class="w-full h-full object-cover rounded-full shadow-sm">
+                </div>
+                <!-- Testimonial content -->
+                <div class="flex-1">
+                    <p class="mb-4 italic">"{{ testimonial.description }}"</p>
+                    <p class="font-semibold">{{ testimonial.name }}</p>
+                    <p class="text-sm text-gray-600">{{ testimonial.position }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section id="faq" class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h2>
+        <div class="max-w-3xl mx-auto space-y-4">
+            <!-- FAQ Items -->
+            <div class="faq-items space-y-4">
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .faq-item {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-question {
+            width: 100%;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            background: none;
+            border: none;
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background: #f9fafb;
+        }
+
+        .faq-answer {
+            max-height: 0;
+            padding: 0 1.5rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            opacity: 0;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+            padding: 1rem 1.5rem 1.5rem;
+            opacity: 1;
+        }
+
+        .faq-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(180deg);
+        }
+
+        @media (max-width: 640px) {
+            .faq-question {
+                padding: 1rem;
+            }
+            
+            .faq-answer {
+                padding: 0 1rem;
+            }
+            
+            .faq-item.active .faq-answer {
+                padding: 0.75rem 1rem 1rem;
+            }
+        }
+    </style>
+
+    <script>
+        const faqData = [
+            {
+                question: "How does the fund recovery process work?",
+                answer: "Our recovery process involves four main steps: 1) Register and create an account, 2) Submit your case details and documentation, 3) Our team verifies and investigates your case, 4) Upon successful recovery, funds are safely transferred to your account."
+            },
+            {
+                question: "What types of cases do you handle?",
+                answer: "We specialize in recovering funds from cryptocurrency scams, investment fraud, forex trading scams, binary options fraud, and other types of financial deception schemes."
+            },
+            {
+                question: "How long does the recovery process take?",
+                answer: "The timeline varies depending on the complexity of your case. Simple cases may be resolved in a few days, few weeks, while more complex cases involving multiple transactions or international transfers may take several months."
+            },
+            {
+                question: "What information do I need to provide?",
+                answer: "You'll need to provide transaction details, dates, amounts lost, any communication with the scammers, relevant wallet addresses or bank details, and any other supporting documentation that can help with the investigation."
+            },
+            {
+                question: "Is my information kept confidential?",
+                answer: "Yes, we maintain strict confidentiality protocols. All your personal and case information is encrypted and securely stored. We only use your information for the purpose of fund recovery and never share it with third parties."
+            }
+        ];
+
+        const faqContainer = document.querySelector('.faq-items');
+
+        // Create FAQ items
+        faqData.forEach((item, index) => {
+            const faqItem = document.createElement('div');
+            faqItem.className = 'faq-item';
+            faqItem.innerHTML = `
+                <button class="faq-question font-semibold focus:outline-none">
+                    ${item.question}
+                    <svg class="faq-icon w-6 h-6 text-purple-500 flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div class="faq-answer">
+                    <p class="text-gray-600">${item.answer}</p>
+                </div>
+            `;
+            faqContainer.appendChild(faqItem);
+
+            // Add click event
+            const question = faqItem.querySelector('.faq-question');
+            question.addEventListener('click', () => {
+                const isActive = faqItem.classList.contains('active');
+                
+                // Close all other items
+                document.querySelectorAll('.faq-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+
+                // Toggle current item
+                if (!isActive) {
+                    faqItem.classList.add('active');
+                }
+            });
+        });
+
+        // Open first FAQ item by default
+        document.querySelector('.faq-item').classList.add('active');
+    </script>
+</section>
+<section id="contact" class="py-20 bg-gray-100">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12">Contact Us</h2>
+        <form class="max-w-lg mx-auto" method="post" action="{% url 'cases:contact' %}">
+            {% csrf_token %}
+                    <div class="mb-4">
+                        <input type="text" placeholder="Your Name" class="w-full px-3 py-2 border border-gray-300 rounded-md" />
+                    </div>
+                    <div class="mb-4">
+                        <input type="email" placeholder="Your Email" class="w-full px-3 py-2 border border-gray-300 rounded-md" />
+                    </div>
+                    <div class="mb-4">
+                        <textarea placeholder="Your Message" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-md"></textarea>
+                    </div>
+                    <button type="submit" class="bg-purple-600 text-white font-bold py-2 px-4 rounded-md hover:bg-purple-700 transition duration-300">
+                        Send Message
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-gray-800 text-white py-12">
+            <div class="container mx-auto px-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Contact Information</h3>
+                        <p>{{ site_settings.email }}</p>
+                        <p>{{ site_settings.phone }}</p>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Follow Us</h3>
+                        <div class="flex space-x-4">
+                            <a href="#" class="hover:text-purple-400">Facebook</a>
+                            <a href="#" class="hover:text-purple-400">Twitter</a>
+                            <a href="#" class="hover:text-purple-400">Instagram</a>
+                            <a href="#" class="hover:text-purple-400">LinkedIn</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8 pt-8 border-t border-gray-700">
+                    <div class="flex flex-col sm:flex-row justify-between items-center">
+                        <p class="mb-4 sm:mb-0">&copy; 2023 {{ site_settings.site_name }}. All rights reserved.</p>
+                        <div class="flex flex-wrap justify-center sm:justify-end space-x-4">
+                            <a href="{% url 'cases:privacy_policy' %}" class="hover:text-purple-400 mb-2 sm:mb-0">Privacy Policy</a>
+                            <a href="{% url 'cases:disclaimer' %}" class="hover:text-purple-400 mb-2 sm:mb-0">Disclaimer</a>
+                            <a href="{% url 'cases:terms_and_conditions' %}" class="hover:text-purple-400 mb-2 sm:mb-0">Terms and Conditions</a>
+                            <a href="{% url 'cases:payment_policy' %}" class="hover:text-purple-400 mb-2 sm:mb-0">Payment Policy</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+
+<script>
+ // Particles.js configuration
+ particlesJS('particles-js', {
+            "particles": {
+                "number": {
+                    "value": 80,
+                    "density": {
+                        "enable": true,
+                        "value_area": 800
+                    }
+                },
+                "color": {
+                    "value": "#ffffff"
+                },
+                "shape": {
+                    "type": "circle"
+                },
+                "opacity": {
+                    "value": 0.5,
+                    "random": false
+                },
+                "size": {
+                    "value": 3,
+                    "random": true
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#ffffff",
+                    "opacity": 0.4,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 6,
+                    "direction": "none",
+                    "random": false,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": {
+                        "enable": true,
+                        "mode": "repulse"
+                    },
+                    "onclick": {
+                        "enable": true,
+                        "mode": "push"
+                    },
+                    "resize": true
+                }
+            },
+            "retina_detect": true
+        });
+
+        // Preloader fade out
+        window.addEventListener('load', function() {
+            let preloader = document.getElementById('preloader');
+            let mainContent = document.getElementById('main-content');
+            let duration = 1000; // 2 seconds
+            let fadeOutTime = 100; // 1 second fade out
+
+            setTimeout(function() {
+                preloader.style.transition = `opacity ${fadeOutTime}ms ease`;
+                preloader.style.opacity = '0';
+                
+                setTimeout(function() {
+                    preloader.style.display = 'none';
+                    mainContent.classList.remove('hidden');
+                    mainContent.style.opacity = '0';
+                    mainContent.style.transition = 'opacity 1s ease';
+                    
+                    setTimeout(function() {
+                        mainContent.style.opacity = '1';
+                    }, 50);
+                }, fadeOutTime);
+            }, duration);
+        });
+
+        // Your existing menu toggle code here
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            document.getElementById('menu').classList.toggle('hidden');
+        });
+    </script>
+
+
+
+<!-- Add this script before the closing </body> tag -->
+<script>
+    const notificationTypes = {
+        success: {
+            bgColor: 'bg-green-50',
+            borderColor: 'border-green-200',
+            textColor: 'text-green-800',
+            iconColor: 'text-green-400',
+            icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />`
+        },
+        error: {
+            bgColor: 'bg-red-50',
+            borderColor: 'border-red-200',
+            textColor: 'text-red-800',
+            iconColor: 'text-red-400',
+            icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />`
+        },
+        warning: {
+            bgColor: 'bg-yellow-50',
+            borderColor: 'border-yellow-200',
+            textColor: 'text-yellow-800',
+            iconColor: 'text-yellow-400',
+            icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />`
+        },
+        info: {
+            bgColor: 'bg-blue-50',
+            borderColor: 'border-blue-200',
+            textColor: 'text-blue-800',
+            iconColor: 'text-blue-400',
+            icon: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />`
+        }
+    };
+    
+    let activeTimeout;
+    
+    function showNotification(title, message, type = 'info', duration = 5000) {
+        // Clear any existing timeout
+        if (activeTimeout) {
+            clearTimeout(activeTimeout);
+        }
+    
+        const container = document.getElementById('notification-container');
+        const notification = document.getElementById('notification');
+        const titleElement = document.getElementById('notification-title');
+        const messageElement = document.getElementById('notification-message');
+        const iconElement = document.querySelector('.notification-icon');
+    
+        // Reset classes
+        notification.className = 'flex items-start gap-3 p-4 rounded-lg shadow-lg border transform transition-all duration-300';
+    
+        // Apply type-specific styles
+        const typeStyles = notificationTypes[type];
+        notification.classList.add(
+            typeStyles.bgColor,
+            typeStyles.borderColor,
+            typeStyles.textColor
+        );
+        iconElement.classList.add(typeStyles.iconColor);
+        iconElement.innerHTML = typeStyles.icon;
+    
+        // Set content
+        titleElement.textContent = title;
+        messageElement.textContent = message;
+    
+        // Show notification
+        container.classList.remove('invisible');
+        
+        // Animate in
+        setTimeout(() => {
+            notification.classList.remove('translate-x-full');
+            notification.classList.add('translate-x-0');
+        }, 100);
+    
+        // Set auto-hide timeout
+        if (duration) {
+            activeTimeout = setTimeout(() => {
+                closeNotification();
+            }, duration);
+        }
+    }
+    
+    function closeNotification() {
+        const container = document.getElementById('notification-container');
+        const notification = document.getElementById('notification');
+        
+        // Animate out
+        notification.classList.remove('translate-x-0');
+        notification.classList.add('translate-x-full');
+        
+        // Hide container after animation
+        setTimeout(() => {
+            container.classList.add('invisible');
+        }, 300);
+    }
+    
+    // Example usage:
+    // showNotification('Success!', 'Your action was completed successfully.', 'success');
+    // showNotification('Error!', 'Something went wrong.', 'error');
+    // showNotification('Warning!', 'Please check your input.', 'warning');
+    // showNotification('Info', 'Your session will expire soon.', 'info');
+    </script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!-- templates/emails/case_confirmation.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #f8f9fa; padding: 20px; text-align: center; }
+        .content { padding: 20px; }
+        .footer { text-align: center; padding: 20px; font-size: 12px; color: #6c757d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Case Submission Confirmation</h2>
+        </div>
+        <div class="content">
+            <p>Dear {{ user.username }},</p>
+            <p>Your case #{{ case.id }} has been successfully submitted. Here are the details:</p>
+            <ul>
+                <li>Company: {{ case.company }}</li>
+                <li>Amount: ${{ case.amount_lost }}</li>
+                <li>Status: {{ case.status|title }}</li>
+            </ul>
+            <p>We will review your case and update you on any progress. You can track your case status through your dashboard.</p>
+        </div>
+        <div class="footer">
+            <p>This is an automated message, please do not reply.</p>
+        </div>
+    </div>
+</body>
+</html>

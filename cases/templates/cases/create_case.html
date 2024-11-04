@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+
+{% block title %}New Recovery Case - Cyber Funds Recovery{% endblock %}
+
+{% block content %}
+
+<div class="flex h-screen bg-cyber-dark">
+    <!-- Sidebar -->
+    <div class="w-64 bg-gray-900 text-white p-6 hidden md:block">
+      <div class="text-2xl font-bold text-cyber-blue mb-8">CyberRecover</div>
+      <nav>
+          <a href="{% url 'cases:dashboard' %}" class="block py-2 px-4 rounded transition duration-200 bg-cyber-blue text-cyber-dark mb-2">Dashboard</a>
+          <a href="{% url 'cases:create_withdrawal' %}" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Withdraw</a>
+          <a href="#" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Contact</a>
+          <a href="{% url 'cases:create_case' %}" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Start New Recovery</a>
+          <a href="#" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Profile</a>
+          <a href="{% url 'logout' %}" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Logout</a>
+      </nav>
+  </div>
+  
+  <!-- Main Content -->
+  <div class="flex-1 overflow-y-auto p-6">
+      <div class="max-w-7xl mx-auto">
+          <!-- Mobile Menu Button -->
+          <div class="md:hidden mb-4">
+              <button id="mobile-menu-button" class="text-cyber-blue hover:text-cyber-pink transition duration-200">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                  </svg>
+              </button>
+          </div>
+  
+          <!-- Mobile Menu -->
+          <div id="mobile-menu" class="hidden md:hidden bg-gray-900 text-white p-4 rounded-lg mb-4">
+              <a href="{% url 'cases:dashboard' %}" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Dashboard</a>
+              <a href="{% url 'cases:create_withdrawal' %}" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Withdraw</a>
+              <a href="#" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Contact</a>
+              <a href="{% url 'cases:create_case' %}" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Start New Recovery</a>
+              <a href="#" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Profile</a>
+              <a href="{% url 'logout' %}" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Logout</a>
+          </div>
+<div class="max-w-2xl mx-auto">
+    <h1 class="text-3xl font-bold text-cyber-blue mb-6 text-center animate-pulse">Submit Recovery Case</h1>
+    
+    <div class="bg-cyber-dark shadow-lg rounded-lg p-6 border border-cyber-blue animate-[glow_4s_ease-in-out_infinite]">
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            
+            <div>
+                <label for="id_company" class="block text-sm font-medium text-cyber-blue">
+                    Company Name
+                </label>
+                <input type="text" name="company" id="id_company" required
+                       class="mt-1 block w-full rounded-md bg-gray-800 border-cyber-blue text-white shadow-sm focus:border-cyber-pink focus:ring-cyber-pink transition duration-300">
+            </div>
+
+            <div>
+                <label for="id_amount_lost" class="block text-sm font-medium text-cyber-blue">
+                    Amount Lost
+                </label>
+                <div class="mt-1 relative rounded-md shadow-sm">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <span class="text-cyber-blue sm:text-sm">$</span>
+                    </div>
+                    <input type="number" name="amount_lost" id="id_amount_lost" required
+                           class="pl-7 block w-full rounded-md bg-gray-800 border-cyber-blue text-white shadow-sm focus:border-cyber-pink focus:ring-cyber-pink transition duration-300">
+                </div>
+            </div>
+
+            <div>
+                <label for="id_payment_method" class="block text-sm font-medium text-cyber-blue">
+                    Payment Method Used
+                </label>
+                <select name="payment_method" id="id_payment_method" required
+                        class="mt-1 block w-full rounded-md bg-gray-800 border-cyber-blue text-white shadow-sm focus:border-cyber-pink focus:ring-cyber-pink transition duration-300">
+                    <option value="">Select payment method</option>
+                    <option value="crypto">Cryptocurrency</option>
+                    <option value="bank">Bank Transfer</option>
+                    <option value="card">Credit/Debit Card</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="id_wallet_address" class="block text-sm font-medium text-cyber-blue">
+                    Wallet Address/Account Details
+                </label>
+                <input type="text" name="wallet_address" id="id_wallet_address" required
+                       class="mt-1 block w-full rounded-md bg-gray-800 border-cyber-blue text-white shadow-sm focus:border-cyber-pink focus:ring-cyber-pink transition duration-300">
+            </div>
+
+            <div>
+                <label for="id_description" class="block text-sm font-medium text-cyber-blue">
+                    Description of Incident
+                </label>
+                <textarea name="description" id="id_description" rows="4" required
+                          class="mt-1 block w-full rounded-md bg-gray-800 border-cyber-blue text-white shadow-sm focus:border-cyber-pink focus:ring-cyber-pink transition duration-300"></textarea>
+            </div>
+
+            <div class="flex justify-end">
+                <button type="submit" 
+                        class="bg-gradient-to-r from-cyber-blue to-cyber-pink text-white px-6 py-2 rounded-lg hover:from-cyber-pink hover:to-cyber-blue transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyber-blue">
+                    Submit Case
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    @keyframes glow {
+        0%, 100% { box-shadow: 0 0 5px #00f3ff, 0 0 10px #00f3ff, 0 0 15px #00f3ff; }
+        50% { box-shadow: 0 0 10px #00f3ff, 0 0 20px #00f3ff, 0 0 30px #00f3ff; }
+    }
+</style>
+<script>
+    document.getElementById('mobile-menu-button').addEventListener('click', function() {
+        var mobileMenu = document.getElementById('mobile-menu');
+        mobileMenu.classList.toggle('hidden');
+    });
+</script>
+{% endblock %}

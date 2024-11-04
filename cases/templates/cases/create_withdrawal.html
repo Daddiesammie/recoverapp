@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block title %}Request Withdrawal - Cyber Funds Recovery{% endblock %}
+
+{% block content %}
+<div class="flex h-screen bg-cyber-dark">
+  <!-- Sidebar -->
+  <div class="w-64 bg-gray-900 text-white p-6 hidden md:block">
+    <div class="text-2xl font-bold text-cyber-blue mb-8">CyberRecover</div>
+    <nav>
+        <a href="{% url 'cases:dashboard' %}" class="block py-2 px-4 rounded transition duration-200 bg-cyber-blue text-cyber-dark mb-2">Dashboard</a>
+        <a href="{% url 'cases:create_withdrawal' %}" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Withdraw</a>
+        <a href="#" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Contact</a>
+        <a href="{% url 'cases:create_case' %}" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Start New Recovery</a>
+        <a href="#" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Profile</a>
+        <a href="{% url 'logout' %}" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Logout</a>
+    </nav>
+</div>
+
+<!-- Main Content -->
+<div class="flex-1 overflow-y-auto p-6">
+    <div class="max-w-7xl mx-auto">
+        <!-- Mobile Menu Button -->
+        <div class="md:hidden mb-4">
+            <button id="mobile-menu-button" class="text-cyber-blue hover:text-cyber-pink transition duration-200">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-gray-900 text-white p-4 rounded-lg mb-4">
+            <a href="{% url 'cases:dashboard' %}" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Dashboard</a>
+            <a href="{% url 'cases:create_withdrawal' %}" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Withdraw</a>
+            <a href="#" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Contact</a>
+            <a href="{% url 'cases:create_case' %}" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Start New Recovery</a>
+            <a href="#" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Profile</a>
+            <a href="{% url 'logout' %}" class="block py-2 px-4 rounded hover:bg-gray-800 transition duration-200 mb-2">Logout</a>
+        </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 overflow-y-auto p-6">
+        <div class="max-w-lg mx-auto mt-10">
+            <h2 class="text-3xl font-bold text-cyber-blue mb-6">Request Withdrawal</h2>
+            <div class="bg-gray-800 shadow-md rounded px-8 pt-6 pb-8 mb-4 border border-cyber-pink animate-[glow_4s_ease-in-out_infinite]">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label class="block text-cyber-blue text-sm font-bold mb-2" for="{{ form.amount.id_for_label }}">
+                            Amount to Withdraw
+                        </label>
+                        <input type="number" name="{{ form.amount.name }}" id="{{ form.amount.id_for_label }}" step="0.01" min="0" max="{{ available_balance }}"
+                               class="w-full px-3 py-2 bg-gray-700 text-cyber-blue border rounded-md focus:outline-none focus:ring-2 focus:ring-cyber-blue"
+                               required>
+                        {% if form.amount.errors %}
+                            {% for error in form.amount.errors %}
+                                <p class="text-red-500 text-xs italic">{{ error }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <button class="bg-gradient-to-r from-cyber-blue to-cyber-pink text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline hover:from-cyber-pink hover:to-cyber-blue transition duration-300" type="submit">
+                            Submit Withdrawal Request
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="mt-4 text-cyber-blue">
+                <p>Total Recovered: ${{ total_balance|floatformat:2 }}</p>
+                <p>Total Withdrawn: ${{ total_withdrawn|floatformat:2 }}</p>
+                <p>Available Balance: ${{ available_balance|floatformat:2 }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @keyframes glow {
+        0%, 100% { box-shadow: 0 0 5px #00f3ff, 0 0 10px #00f3ff, 0 0 15px #00f3ff; }
+        50% { box-shadow: 0 0 10px #00f3ff, 0 0 20px #00f3ff, 0 0 30px #00f3ff; }
+    }
+</style>
+
+<script>
+    document.getElementById('mobile-menu-button').addEventListener('click', function() {
+        var mobileMenu = document.getElementById('mobile-menu');
+        mobileMenu.classList.toggle('hidden');
+    });
+</script>
+{% endblock %}

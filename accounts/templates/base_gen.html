@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Cyber Funds Recovery{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cyber-blue': '#00f3ff',
+                        'cyber-pink': '#ff00ff',
+                        'cyber-yellow': '#ffff00',
+                        'cyber-dark': '#0a0a0a',
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        @keyframes glow {
+            0%, 100% { text-shadow: 0 0 5px #00f3ff, 0 0 10px #00f3ff, 0 0 15px #00f3ff; }
+            50% { text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff; }
+        }
+        .cyber-glow {
+            animation: glow 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-cyber-dark text-gray-100 min-h-screen flex flex-col">
+    <nav class="bg-cyber-dark border-b border-cyber-blue fixed top-0 left-0 right-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="{% url 'cases:home' %}" class="flex-shrink-0 flex items-center">
+                        <span class="text-2xl font-bold text-cyber-blue cyber-glow">CyberRecover</span>
+                    </a>
+                </div>
+                <div class="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
+                    <a href="{% url 'cases:home' %}" class="text-gray-300 hover:bg-gray-700 hover:text-cyber-blue px-3 py-2 rounded-md text-sm font-medium transition duration-300">Home</a>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'cases:dashboard' %}" class="text-gray-300 hover:bg-gray-700 hover:text-cyber-blue px-3 py-2 rounded-md text-sm font-medium transition duration-300">Dashboard</a>
+                        <a href="{% url 'cases:create_case' %}" class="text-gray-300 hover:bg-gray-700 hover:text-cyber-pink px-3 py-2 rounded-md text-sm font-medium transition duration-300">New Case</a>
+                        <a href="{% url 'logout' %}" class="text-gray-300 hover:bg-gray-700 hover:text-cyber-yellow px-3 py-2 rounded-md text-sm font-medium transition duration-300">Logout</a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="text-gray-300 hover:bg-gray-700 hover:text-cyber-blue px-3 py-2 rounded-md text-sm font-medium transition duration-300">Login</a>
+                        <a href="{% url 'register' %}" class="text-gray-300 hover:bg-gray-700 hover:text-cyber-pink px-3 py-2 rounded-md text-sm font-medium transition duration-300">Register</a>
+                    {% endif %}
+                </div>
+                <div class="sm:hidden flex items-center">
+                    <button type="button" class="mobile-menu-button text-gray-400 hover:text-white focus:outline-none focus:text-white">
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile menu, show/hide based on menu state. -->
+        <div class="sm:hidden hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="{% url 'cases:home' %}" class="text-gray-300 hover:bg-gray-700 hover:text-cyber-blue block px-3 py-2 rounded-md text-base font-medium transition duration-300">Home</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'cases:dashboard' %}" class="text-gray-300 hover:bg-gray-700 hover:text-cyber-blue block px-3 py-2 rounded-md text-base font-medium transition duration-300">Dashboard</a>
+                    <a href="{% url 'cases:create_case' %}" class="text-gray-300 hover:bg-gray-700 hover:text-cyber-pink block px-3 py-2 rounded-md text-base font-medium transition duration-300">New Case</a>
+                    <a href="{% url 'logout' %}" class="text-gray-300 hover:bg-gray-700 hover:text-cyber-yellow block px-3 py-2 rounded-md text-base font-medium transition duration-300">Logout</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="text-gray-300 hover:bg-gray-700 hover:text-cyber-blue block px-3 py-2 rounded-md text-base font-medium transition duration-300">Login</a>
+                    <a href="{% url 'register' %}" class="text-gray-300 hover:bg-gray-700 hover:text-cyber-pink block px-3 py-2 rounded-md text-base font-medium transition duration-300">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto py-6 sm:px-6 lg:px-8 mt-16">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="mb-4 p-4 rounded-lg {% if message.tags == 'error' %}bg-red-900 text-red-100{% else %}bg-green-900 text-green-100{% endif %} border-l-4 {% if message.tags == 'error' %}border-cyber-pink{% else %}border-cyber-blue{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-cyber-dark border-t border-cyber-blue">
+        <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
+            <p class="text-center text-cyber-blue">&copy; 2024 CyberRecover. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Toggle mobile menu
+        const mobileMenuButton = document.querySelector('.mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>

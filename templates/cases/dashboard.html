@@ -1,0 +1,61 @@
+<!-- templates/cases/dashboard.html -->
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Funds Recovery{% endblock %}
+
+{% block content %}
+<div class="flex flex-col space-y-6">
+    <!-- Header -->
+    <div class="flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-gray-900">My Recovery Cases</h1>
+        <a href="{% url 'cases:create_case' %}" 
+           class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+            Start New Recovery
+        </a>
+    </div>
+
+    <!-- Cases List -->
+    <div class="bg-white shadow-sm rounded-lg divide-y">
+        {% if cases %}
+            {% for case in cases %}
+            <div class="p-6 hover:bg-gray-50">
+                <div class="flex items-center justify-between">
+                    <div class="flex flex-col">
+                        <h3 class="text-lg font-medium">Case #{{ case.id }} - {{ case.company }}</h3>
+                        <p class="text-sm text-gray-500">Amount: ${{ case.amount_lost }}</p>
+                    </div>
+                    <div class="flex flex-col items-end">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
+                            {% if case.status == 'pending' %}bg-yellow-100 text-yellow-800
+                            {% elif case.status == 'reviewing' %}bg-blue-100 text-blue-800
+                            {% elif case.status == 'approved' %}bg-green-100 text-green-800
+                            {% elif case.status == 'completed' %}bg-purple-100 text-purple-800
+                            {% else %}bg-red-100 text-red-800{% endif %}">
+                            {{ case.status|title }}
+                        </span>
+                        <span class="text-sm text-gray-500 mt-1">{{ case.created_at|date:"M d, Y" }}</span>
+                    </div>
+                </div>
+                
+                {% if case.status == 'approved' %}
+                <div class="mt-4">
+                    <a href="{% url 'cases:verify' case.pk %}" 
+                       class="text-blue-600 hover:text-blue-800 font-medium">
+                        Proceed to Verification →
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="p-6 text-center text-gray-500">
+                <p>You haven't submitted any recovery cases yet.</p>
+                <a href="{% url 'cases:create_case' %}" 
+                   class="text-blue-600 hover:text-blue-800 mt-2 inline-block">
+                    Start your first recovery case
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

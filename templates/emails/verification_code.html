@@ -1,0 +1,32 @@
+<!-- templates/emails/verification_code.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #f8f9fa; padding: 20px; text-align: center; }
+        .content { padding: 20px; }
+        .code { font-size: 24px; font-weight: bold; text-align: center; 
+                padding: 20px; background: #e9ecef; margin: 20px 0; }
+        .footer { text-align: center; padding: 20px; font-size: 12px; color: #6c757d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Verification Code - Step {{ step }}</h2>
+        </div>
+        <div class="content">
+            <p>Dear {{ user.username }},</p>
+            <p>Here is your verification code for Case #{{ case.id }}, Step {{ step }}:</p>
+            <div class="code">{{ code }}</div>
+            <p>This code will expire in 30 minutes. Please enter it in the verification form to proceed.</p>
+            <p>If you didn't request this code, please ignore this email.</p>
+        </div>
+        <div class="footer">
+            <p>This is an automated message, please do not reply.</p>
+        </div>
+    </div>
+</body>
+</html>
