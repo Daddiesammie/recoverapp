@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'cases',
     'accounts',
     'rest_framework',
+    'livechat',
 ]
 
 MIDDLEWARE = [
@@ -69,6 +70,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'livechat.context_processors.livechat_settings',
             ],
         },
     },
