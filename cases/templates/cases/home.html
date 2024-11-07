@@ -6,57 +6,6 @@
     <title>Full Landing Page with Tailwind CSS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <style>
-        #particles-js {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
-        
-        @keyframes orbit {
-            0% {
-                transform: rotate(0deg) translateX(50px) rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg) translateX(50px) rotate(-360deg);
-            }
-        }
-        .cyber-circle {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            margin: -10px 0 0 -10px;
-        }
-        .cyber-circle:nth-child(1) {
-            background-color: #ff00ff;
-            animation: orbit 4s linear infinite;
-        }
-        .cyber-circle:nth-child(2) {
-            background-color: #00ffff;
-            animation: orbit 4s linear infinite 1.33s;
-        }
-        .cyber-circle:nth-child(3) {
-            background-color: #ffff00;
-            animation: orbit 4s linear infinite 2.66s;
-        }
-        .cyber-orbit {
-            width: 120px;
-            height: 120px;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            position: relative;
-            animation: pulse 2s ease-in-out infinite;
-            z-index: 2;
-        }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-    </style>
 </head>
 <body class="font-sans">
 <!-- Add this right after your <body> tag -->
@@ -82,88 +31,97 @@
         </div>
     </div>
 
-    <!-- Preloader -->
-    <div id="preloader" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900">
-        <div id="particles-js"></div>
-        <div class="cyber-orbit">
-            <div class="cyber-circle"></div>
-            <div class="cyber-circle"></div>
-            <div class="cyber-circle"></div>
-        </div>
+  <!-- Preloader -->
+<div id="preloader" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900">
+    <div class="text-center">
+        <h1 id="site-name" class="text-4xl md:text-6xl font-bold text-white"></h1>
     </div>
-
- 
+</div>
 
     <!-- Main Content -->
     <div id="main-content" class="hidden">
         <!-- Header -->
         <header class="bg-white shadow-md fixed top-0 left-0 right-0 z-40">
-            <div class="container mx-auto px-4 py-4 flex items-center justify-between">
-                <div class="text-2xl font-bold text-purple-600">
-                    {% if site_settings.logo %}
-                        <img src="{{ site_settings.logo.url }}" alt="{{ site_settings.site_name }}" class="h-8">
-                    {% else %}
-                        {{ site_settings.site_name }}
-                    {% endif %}
+            <div class="container mx-auto px-4 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="text-2xl font-bold text-purple-600">
+                        {% if site_settings.logo %}
+                            <img src="{{ site_settings.logo.url }}" alt="{{ site_settings.site_name }}" class="h-8">
+                        {% else %}
+                            {{ site_settings.site_name }}
+                        {% endif %}
+                    </div>
+                    <button id="menu-toggle" class="md:hidden focus:outline-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                    <nav id="menu" class="hidden md:block absolute md:relative top-full left-0 right-0 bg-white md:bg-transparent shadow-md md:shadow-none">
+                        <ul class="flex flex-col md:flex-row md:items-center p-4 md:p-0">
+                            <li class="my-2 md:my-0 md:mr-6"><a href="#home" class="block text-gray-600 hover:text-purple-600 transition duration-300">Home</a></li>
+                            <li class="my-2 md:my-0 md:mr-6"><a href="#about" class="block text-gray-600 hover:text-purple-600 transition duration-300">About</a></li>
+                            <li class="my-2 md:my-0 md:mr-6"><a href="#services" class="block text-gray-600 hover:text-purple-600 transition duration-300">Services</a></li>
+                            {% if user.is_authenticated %}
+                                <li class="my-2 md:my-0 md:mr-6">
+                                    <a href="{% url 'cases:dashboard' %}" class="block text-gray-600 hover:text-purple-600 transition duration-300">Dashboard</a>
+                                </li>
+                                <li class="my-2 md:my-0 md:mr-6">
+                                    <a href="{% url 'logout' %}" class="block text-gray-600 hover:text-purple-600 transition duration-300">Logout</a>
+                                </li>
+                            {% else %}
+                                <li class="my-2 md:my-0 md:mr-6">
+                                    <a href="{% url 'login' %}" class="block text-gray-600 hover:text-purple-600 transition duration-300">Login</a>
+                                </li>
+                                <li class="my-2 md:my-0 md:mr-6">
+                                    <a href="{% url 'register' %}" class="block text-gray-600 hover:text-purple-600 transition duration-300">Register</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </nav>
                 </div>
-                <button id="menu-toggle" class="md:hidden">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </button>
-                <nav id="menu" class="hidden md:block absolute md:relative top-full left-0 right-0 bg-white md:bg-transparent">
-                    <ul class="flex flex-col md:flex-row md:space-x-6 p-4 md:p-0">
-                        <li class="my-2 md:my-0"><a href="#home" class="text-gray-600 hover:text-purple-600 transition duration-300">Home</a></li>
-                        <li class="my-2 md:my-0"><a href="#about" class="text-gray-600 hover:text-purple-600 transition duration-300">About</a></li>
-                        <li class="my-2 md:my-0"><a href="#services" class="text-gray-600 hover:text-purple-600 transition duration-300">Services</a></li>
-                        <li class="my-2 md:my-0"><a href="#contact" class="text-gray-600 hover:text-purple-600 transition duration-300">Contact</a></li>
-                        {% if user.is_authenticated %}
-                    <li class="my-2 md:my-0">
-                        <a href="{% url 'cases:dashboard' %}" class="text-cyber-dark hover:text-white hover:bg-cyber-blue px-3 py-2 rounded-md transition duration-300">Dashboard</a>
-                    </li>
-                    <li class="my-2 md:my-0">
-                        <a href="{% url 'logout' %}" class="text-cyber-dark hover:text-white hover:bg-cyber-pink px-3 py-2 rounded-md transition duration-300">Logout</a>
-                    </li>
-                {% else %}
-                    <li class="my-2 md:my-0">
-                        <a href="{% url 'login' %}" class="text-cyber-dark hover:text-white hover:bg-cyber-blue px-3 py-2 rounded-md transition duration-300">Login</a>
-                    </li>
-                    <li class="my-2 md:my-0">
-                        <a href="{% url 'register' %}" class="text-cyber-dark hover:text-white hover:bg-cyber-pink px-3 py-2 rounded-md transition duration-300">Register</a>
-                    </li>
-                {% endif %}
-                    </ul>
-                </nav>
             </div>
         </header>
 
-        <!-- Hero section with wavy bottom -->
         <div id="home" class="relative h-screen overflow-hidden pt-16">
             <!-- Background image -->
-            <div class="absolute inset-0 bg-cover bg-center z-0" style="background-image: url('{% if site_settings.hero_image %}{{ site_settings.hero_image.url }}{% else %}https://images.unsplash.com/photo-1492571350019-22de08371fd3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2053&q=80{% endif %}');"></div>
+            <div 
+                class="absolute inset-0 bg-cover bg-center z-0" 
+                style="background-image: url('https://images.unsplash.com/photo-1492571350019-22de08371fd3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2053&q=80');"
+            ></div>
             
-            <!-- Colorful gradient overlay -->
-            <div class="absolute inset-0 bg-gradient-to-br from-purple-500 via-pink-500 to-red-500 opacity-70 z-10"></div>
+            <!-- Darker gradient overlay -->
+            <div class="absolute inset-0 bg-gradient-to-br from-purple-900 via-indigo-900 to-gray-900 opacity-90 z-10"></div>
             
             <!-- Content -->
             <div class="relative z-20 flex items-center justify-center h-full">
                 <div class="text-center px-4">
-                    <h1 class="text-3xl md:text-4xl lg:text-6xl font-bold text-white mb-4">Welcome to Our Website</h1>
-                    <p class="text-lg md:text-xl lg:text-2xl text-white mb-8">Discover amazing things with us</p>
-                    <button class="bg-white text-purple-600 hover:bg-purple-100 font-bold py-2 px-6 rounded-full transition duration-300">
+                    <h1 class="text-3xl md:text-4xl lg:text-6xl font-bold text-white mb-4" id="hero-title">
+                        <span id="typed-title"></span><span class="cursor-blink">|</span>
+                    </h1>
+                    <p class="text-lg md:text-xl lg:text-2xl text-white mb-8" id="hero-subtitle">
+                        <span id="typed-subtitle"></span><span class="cursor-blink">|</span>
+                    </p>
+                    <a 
+                        href="{% url 'register' %}" 
+                        class="inline-block bg-white text-purple-900 hover:bg-purple-100 font-bold py-2 px-6 rounded-full transition duration-300 ease-in-out transform hover:scale-105 opacity-0 translate-y-10" 
+                        id="hero-button"
+                    >
                         Get Started
-                    </button>
+                    </a>
                 </div>
             </div>
-
-            <!-- Wavy bottom with shadow -->
-            <div class="absolute bottom-0 left-0 right-0 z-30 drop-shadow-lg">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" class="w-full h-auto">
-                    <path fill="#ffffff" fill-opacity="1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
-                </svg>
-            </div>
         </div>
-
+        
+        <style>
+            @keyframes blink {
+                0% { opacity: 0; }
+                50% { opacity: 1; }
+                100% { opacity: 0; }
+            }
+            .cursor-blink {
+                animation: blink 0.7s infinite;
+            }
+        </style>
  <!-- About Us Section -->
 <section id="about" class="py-20 bg-white">
     <div class="container mx-auto px-4">
@@ -278,40 +236,63 @@
 </section>
 
         <!-- Call to Action Section -->
-        <section class="py-20 bg-purple-600 text-white">
-            <div class="container mx-auto px-4 text-center">
-                <h2 class="text-3xl font-bold mb-4">Ready to Get Started?</h2>
-                <p class="text-xl mb-8">Join us today and experience the difference!</p>
-                <button class="bg-white text-purple-600 hover:bg-purple-100 font-bold py-2 px-6 rounded-full transition duration-300">
-                    Sign Up Now
-                </button>
+        <section class="py-20 bg-cover bg-center relative overflow-hidden" style="background-image: url('https://images.unsplash.com/photo-1492571350019-22de08371fd3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2053&q=80');">
+            <div class="absolute inset-0 bg-gradient-to-br from-purple-900 via-indigo-900 to-gray-900 opacity-90 z-0"></div>
+            <div class="container mx-auto px-4 text-center relative z-10">
+              <h2 class="text-3xl font-bold mb-4 text-white">Ready to Get Started?</h2>
+              <p class="text-xl mb-8 text-white">Join us today and experience the difference!</p>
+              <a href="{% url 'register' %}"><button class="bg-white text-purple-600 hover:bg-purple-100 font-bold py-2 px-6 rounded-full transition duration-300">
+                Sign Up Now
+              </button></a>
             </div>
-        </section>
+          </section>
+
+        <style>
+            .testimonial {
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);
+              opacity: 0;
+              transition: opacity 0.5s ease-in-out;
+              width: 80%;
+              max-width: 600px;
+            }
+        
+            .testimonial.active {
+              opacity: 1;
+            }
+        
+            @media (max-width: 768px) {
+              .testimonial {
+                width: 90%;
+              }
+            }
+          </style>
 
         <!-- Testimonials Section -->
-<section class="py-20 bg-white">
-    <div class="container mx-auto px-4">
-        <h2 class="text-3xl font-bold text-center mb-12">What Our Clients Say</h2>
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {% for testimonial in testimonials %}
-            <div class="bg-gray-100 p-6 rounded-lg shadow-md flex flex-col md:flex-row items-start gap-6">
-                <!-- Image container with fixed dimensions -->
-                <div class="w-24 h-24 flex-shrink-0">
-                    <img src="{{ testimonial.image.url }}" 
-                         alt="{{ testimonial.name }}" 
-                         class="w-full h-full object-cover rounded-full shadow-sm">
+        <section class="py-20 bg-white">
+            <div class="container mx-auto px-4">
+              <h2 class="text-3xl font-bold text-center mb-12">What Our Clients Say</h2>
+              <div class="testimonials-container relative h-96">
+                {% for testimonial in testimonials %}
+                <div class="testimonial">
+                  <div class="bg-gray-100 p-8 rounded-lg shadow-md flex flex-col md:flex-row items-start gap-6">
+                    <div class="w-24 h-24 flex-shrink-0">
+                      <img src="{{ testimonial.image.url }}" alt="{{ testimonial.name }}" class="w-full h-full object-cover rounded-full shadow-sm">
+                    </div>
+                    <div class="flex-1">
+                      <p class="mb-4 italic">"{{ testimonial.description }}"</p>
+                      <p class="font-semibold">{{ testimonial.name }}</p>
+                      <p class="text-sm text-gray-600">{{ testimonial.position }}</p>
+                    </div>
+                  </div>
                 </div>
-                <!-- Testimonial content -->
-                <div class="flex-1">
-                    <p class="mb-4 italic">"{{ testimonial.description }}"</p>
-                    <p class="font-semibold">{{ testimonial.name }}</p>
-                    <p class="text-sm text-gray-600">{{ testimonial.position }}</p>
-                </div>
+                {% endfor %}
+              </div>
             </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
+          </section>
+        
 
 <!-- FAQ Section -->
 <section id="faq" class="py-20 bg-gray-50">
@@ -513,77 +494,64 @@
             </div>
         </footer>
     </div>
-
-
 <script>
- // Particles.js configuration
- particlesJS('particles-js', {
-            "particles": {
-                "number": {
-                    "value": 80,
-                    "density": {
-                        "enable": true,
-                        "value_area": 800
-                    }
-                },
-                "color": {
-                    "value": "#ffffff"
-                },
-                "shape": {
-                    "type": "circle"
-                },
-                "opacity": {
-                    "value": 0.5,
-                    "random": false
-                },
-                "size": {
-                    "value": 3,
-                    "random": true
-                },
-                "line_linked": {
-                    "enable": true,
-                    "distance": 150,
-                    "color": "#ffffff",
-                    "opacity": 0.4,
-                    "width": 1
-                },
-                "move": {
-                    "enable": true,
-                    "speed": 6,
-                    "direction": "none",
-                    "random": false,
-                    "straight": false,
-                    "out_mode": "out",
-                    "bounce": false
-                }
-            },
-            "interactivity": {
-                "detect_on": "canvas",
-                "events": {
-                    "onhover": {
-                        "enable": true,
-                        "mode": "repulse"
-                    },
-                    "onclick": {
-                        "enable": true,
-                        "mode": "push"
-                    },
-                    "resize": true
-                }
-            },
-            "retina_detect": true
+    document.addEventListener('DOMContentLoaded', function() {
+        const menuToggle = document.getElementById('menu-toggle');
+        const menu = document.getElementById('menu');
+        const menuItems = menu.querySelectorAll('a');
+
+        menuToggle.addEventListener('click', function() {
+            menu.classList.toggle('hidden');
         });
 
-        // Preloader fade out
-        window.addEventListener('load', function() {
-            let preloader = document.getElementById('preloader');
-            let mainContent = document.getElementById('main-content');
-            let duration = 1000; // 2 seconds
-            let fadeOutTime = 100; // 1 second fade out
+        menuItems.forEach(item => {
+            item.addEventListener('click', function() {
+                if (window.innerWidth < 768) {  // Only close for mobile view
+                    menu.classList.add('hidden');
+                }
+            });
+        });
 
-            setTimeout(function() {
-                preloader.style.transition = `opacity ${fadeOutTime}ms ease`;
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const isClickInside = menu.contains(event.target) || menuToggle.contains(event.target);
+            if (!isClickInside && window.innerWidth < 768) {
+                menu.classList.add('hidden');
+            }
+        });
+
+        // Adjust menu visibility on window resize
+        window.addEventListener('resize', function() {
+            if (window.innerWidth >= 768) {
+                menu.classList.remove('hidden');
+            } else {
+                menu.classList.add('hidden');
+            }
+        });
+    });
+</script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const siteName = "{{ site_settings.site_name }}";
+            const siteNameElement = document.getElementById('site-name');
+            let index = 0;
+    
+            function typeText() {
+                if (index < siteName.length) {
+                    siteNameElement.textContent += siteName.charAt(index);
+                    index++;
+                    setTimeout(typeText, 100);
+                } else {
+                    setTimeout(fadeOutPreloader, 1000);
+                }
+            }
+    
+            function fadeOutPreloader() {
+                const preloader = document.getElementById('preloader');
+                const mainContent = document.getElementById('main-content');
+                
                 preloader.style.opacity = '0';
+                preloader.style.transition = 'opacity 1s ease';
                 
                 setTimeout(function() {
                     preloader.style.display = 'none';
@@ -594,17 +562,12 @@
                     setTimeout(function() {
                         mainContent.style.opacity = '1';
                     }, 50);
-                }, fadeOutTime);
-            }, duration);
-        });
-
-        // Your existing menu toggle code here
-        document.getElementById('menu-toggle').addEventListener('click', function() {
-            document.getElementById('menu').classList.toggle('hidden');
+                }, 1000);
+            }
+    
+            typeText();
         });
     </script>
-
-
 
 <!-- Add this script before the closing </body> tag -->
 <script>
@@ -750,5 +713,50 @@
             });
         });
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const titleText = "Your Path to Funds Recovery";
+            const subtitleText = "Secure and effective way to recover lost funds";
+            const typedTitleSpan = document.getElementById("typed-title");
+            const typedSubtitleSpan = document.getElementById("typed-subtitle");
+    
+            function typeText(element, text, delay, callback) {
+                let index = 0;
+                function type() {
+                    if (index < text.length) {
+                        element.textContent += text[index];
+                        index++;
+                        setTimeout(type, delay);
+                    } else if (callback) {
+                        setTimeout(callback, 500);
+                    }
+                }
+                type();
+            }
+    
+            function startTyping() {
+                typeText(typedTitleSpan, titleText, 100, function() {
+                    typeText(typedSubtitleSpan, subtitleText, 50, function() {
+                        document.getElementById('hero-button').classList.remove('opacity-0', 'translate-y-10');
+                    });
+                });
+            }
+    
+            startTyping();
+        });
+    </script>
+<script>
+    const testimonials = document.querySelectorAll('.testimonial');
+    let currentIndex = 0;
+
+    function showNextTestimonial() {
+      testimonials[currentIndex].classList.remove('active');
+      currentIndex = (currentIndex + 1) % testimonials.length;
+      testimonials[currentIndex].classList.add('active');
+    }
+
+    setInterval(showNextTestimonial, 5000);
+  </script>
+
 </body>
 </html>
