@@ -15,13 +15,26 @@
                 <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-cyber-yellow mb-1">
                     {{ field.label }}
                 </label>
-                <input type="{{ field.field.widget.input_type }}"
-                       name="{{ field.name }}"
-                       id="{{ field.id_for_label }}"
-                       {% if field.field.required %}required{% endif %}
-                       class="w-full bg-gray-800 text-white border-cyber-blue focus:border-cyber-pink focus:ring-1 focus:ring-cyber-pink rounded-md shadow-sm py-2 px-3 transition duration-300"
-                       {% if field.value %}value="{{ field.value }}"{% endif %}
-                >
+                {% if field.name == 'currency' %}
+                    <select name="{{ field.name }}"
+                           id="{{ field.id_for_label }}"
+                           {% if field.field.required %}required{% endif %}
+                           class="w-full bg-gray-800 text-white border-cyber-blue focus:border-cyber-pink focus:ring-1 focus:ring-cyber-pink rounded-md shadow-sm py-2 px-3 transition duration-300">
+                        {% for value, label in field.field.choices %}
+                            <option value="{{ value }}" {% if field.value == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                {% else %}
+                    <input type="{{ field.field.widget.input_type }}"
+                           name="{{ field.name }}"
+                           id="{{ field.id_for_label }}"
+                           {% if field.field.required %}required{% endif %}
+                           class="w-full bg-gray-800 text-white border-cyber-blue focus:border-cyber-pink focus:ring-1 focus:ring-cyber-pink rounded-md shadow-sm py-2 px-3 transition duration-300"
+                           {% if field.value %}value="{{ field.value }}"{% endif %}>
+                {% endif %}
+
                 {% if field.errors %}
                 <div class="mt-1 text-cyber-pink text-sm">
                     {{ field.errors|join:", " }}

@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load custom_filters %}
-
+{% load currency_filters %}
 {% block title %}Dashboard - Cyber Funds Recovery{% endblock %}
 
 {% block content %}
@@ -44,100 +44,24 @@
             <h1 class="text-3xl font-bold text-cyber-blue animate-pulse mb-6">Dashboard</h1>
 
             <!-- Account Summary Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="bg-gray-800 p-6 rounded-lg border border-cyber-blue animate-[glow_4s_ease-in-out_infinite]">
-                    <h2 class="text-xl font-semibold text-cyber-blue mb-2">Total Recovered</h2>
-                    <p class="text-3xl font-bold text-cyber-green">${{ completed_amount|floatformat:2 }}</p>
+                            <!-- Account Summary Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-gray-800 p-6 rounded-lg border border-cyber-blue animate-[glow_4s_ease-in-out_infinite]">
+                        <h2 class="text-xl font-semibold text-cyber-blue mb-2">Total Recovered</h2>
+                        <p class="text-3xl font-bold text-cyber-green">{{ completed_amount|currency_symbol:user.currency }}</p>
+                    </div>
+                    <div class="bg-gray-800 p-6 rounded-lg border border-cyber-pink animate-[glow_4s_ease-in-out_infinite]">
+                        <h2 class="text-xl font-semibold text-cyber-blue mb-2">Total Withdrawn</h2>
+                        <p class="text-3xl font-bold text-cyber-green">{{ total_withdrawn|currency_symbol:user.currency }}</p>
+                    </div>
+                    <div class="bg-gray-800 p-6 rounded-lg border border-cyber-blue animate-[glow_4s_ease-in-out_infinite]">
+                        <h2 class="text-xl font-semibold text-cyber-blue mb-2">Available Balance</h2>
+                        <p class="text-3xl font-bold text-cyber-green">{{ completed_amount|subtract:total_withdrawn|currency_symbol:user.currency }}</p>
+                    </div>
                 </div>
-                <div class="bg-gray-800 p-6 rounded-lg border border-cyber-pink animate-[glow_4s_ease-in-out_infinite]">
-                    <h2 class="text-xl font-semibold text-cyber-blue mb-2">Total Withdrawn</h2>
-                    <p class="text-3xl font-bold text-cyber-green">${{ total_withdrawn|floatformat:2 }}</p>
-                </div>
-                <div class="bg-gray-800 p-6 rounded-lg border border-cyber-blue animate-[glow_4s_ease-in-out_infinite]">
-                    <h2 class="text-xl font-semibold text-cyber-blue mb-2">Available Balance</h2>
-                    <p class="text-3xl font-bold text-cyber-green">${{ completed_amount|subtract:total_withdrawn|floatformat:2 }}</p>
-                </div>
-            </div>
 
-               <!-- KYC Verification Section (New) -->
-               <div class="mb-8">
-                <h2 class="text-2xl font-bold text-cyber-blue mb-4">KYC Verification</h2>
-                <div class="bg-gray-800 p-6 rounded-lg border border-cyber-pink animate-[glow_4s_ease-in-out_infinite]">
-                    {% if user.kycverification.is_verified %}
-                        <p class="text-cyber-green mb-4">Your KYC verification is complete.</p>
-                        <div class="flex items-center">
-                            <svg class="w-6 h-6 text-cyber-green mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                            <span class="text-cyber-blue">Verified on: {{ user.kycverification.verification_date|date:"Y-m-d H:i" }}</span>
-                        </div>
-                    {% else %}
-                        <p class="text-cyber-blue mb-4">Complete KYC verification to enable withdrawals.</p>
-                        <a href="{% url 'cases:kyc_verification' %}" 
-                           class="bg-gradient-to-r from-cyber-blue to-cyber-pink text-white px-6 py-2 rounded-lg hover:from-cyber-pink hover:to-cyber-blue transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyber-blue">
-                            Start KYC Verification
-                        </a>
-                    {% endif %}
-                </div>
-            </div>
 
-            <!-- Withdrawal Section -->
-            <div class="mb-8">
-                <h2 class="text-2xl font-bold text-cyber-blue mb-4">Withdrawal</h2>
-                <div class="bg-gray-800 p-6 rounded-lg border border-cyber-pink animate-[glow_4s_ease-in-out_infinite]">
-                    <p class="text-cyber-blue mb-4">Available for withdrawal: ${{ completed_amount|subtract:total_withdrawn|floatformat:2 }}</p>
-                    {% if user.kycverification.is_verified %}
-                        <a href="{% url 'cases:create_withdrawal' %}" 
-                           class="bg-gradient-to-r from-cyber-blue to-cyber-pink text-white px-6 py-2 rounded-lg hover:from-cyber-pink hover:to-cyber-blue transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyber-blue">
-                            Request Withdrawal
-                        </a>
-                    {% else %}
-                        <p class="text-cyber-pink mb-4">Complete KYC verification to enable withdrawals.</p>
-                        <a href="{% url 'cases:kyc_verification' %}" 
-                           class="bg-gradient-to-r from-cyber-blue to-cyber-pink text-white px-6 py-2 rounded-lg hover:from-cyber-pink hover:to-cyber-blue transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyber-blue">
-                            Start KYC Verification
-                        </a>
-                    {% endif %}
-                </div>
-            </div>
-
-            <!-- Recent Withdrawals -->
-            <div class="mb-8">
-                <h2 class="text-2xl font-bold text-cyber-blue mb-4">Recent Withdrawals</h2>
-                <div class="bg-gray-800 rounded-lg border border-cyber-blue animate-[glow_4s_ease-in-out_infinite] overflow-x-auto">
-                    <table class="w-full text-left">
-                        <thead>
-                            <tr class="border-b border-gray-700">
-                                <th class="p-4 text-cyber-blue">Date</th>
-                                <th class="p-4 text-cyber-blue">Amount</th>
-                                <th class="p-4 text-cyber-blue">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for withdrawal in recent_withdrawals %}
-                            <tr class="border-b border-gray-700 hover:bg-gray-700 transition duration-200">
-                                <td class="p-4 text-cyber-blue">{{ withdrawal.created_at|date:"Y-m-d H:i" }}</td>
-                                <td class="p-4 text-cyber-green">${{ withdrawal.amount|floatformat:2 }}</td>
-                                <td class="p-4">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
-                                        {% if withdrawal.status == 'pending' %}bg-blue-900 text-blue-200
-                                        {% elif withdrawal.status == 'completed' %}bg-green-900 text-green-200
-                                        {% else %}bg-red-900 text-red-200{% endif %}">
-                                        {{ withdrawal.get_status_display }}
-                                    </span>
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="3" class="p-4 text-center text-gray-400">No recent withdrawals</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Recovery Cases -->
+                <!-- Recovery Cases -->
             <div class="mb-6 flex justify-between items-center">
                 <h2 class="text-2xl font-bold text-cyber-blue">My Recovery Cases</h2>
                 <a href="{% url 'cases:create_case' %}" 
@@ -188,6 +112,86 @@
                     </div>
                 {% endif %}
             </div>
+
+               <!-- KYC Verification Section (New) -->
+               <div class="mb-8">
+                <h2 class="text-2xl font-bold text-cyber-blue mb-4">KYC Verification</h2>
+                <div class="bg-gray-800 p-6 rounded-lg border border-cyber-pink animate-[glow_4s_ease-in-out_infinite]">
+                    {% if user.kycverification.is_verified %}
+                        <p class="text-cyber-green mb-4">Your KYC verification is complete.</p>
+                        <div class="flex items-center">
+                            <svg class="w-6 h-6 text-cyber-green mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span class="text-cyber-blue">Verified on: {{ user.kycverification.verification_date|date:"Y-m-d H:i" }}</span>
+                        </div>
+                    {% else %}
+                        <p class="text-cyber-blue mb-4">Complete KYC verification to enable withdrawals.</p>
+                        <a href="{% url 'cases:kyc_verification' %}" 
+                           class="bg-gradient-to-r from-cyber-blue to-cyber-pink text-white px-6 py-2 rounded-lg hover:from-cyber-pink hover:to-cyber-blue transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyber-blue">
+                            Start KYC Verification
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Withdrawal Section -->
+<!-- Withdrawal Section -->
+<div class="mb-8">
+    <h2 class="text-2xl font-bold text-cyber-blue mb-4">Withdrawal</h2>
+    <div class="bg-gray-800 p-6 rounded-lg border border-cyber-pink animate-[glow_4s_ease-in-out_infinite]">
+        <p class="text-cyber-blue mb-4">Available for withdrawal: {{ completed_amount|subtract:total_withdrawn|currency_symbol:user.currency }}</p>
+                    {% if user.kycverification.is_verified %}
+                        <a href="{% url 'cases:create_withdrawal' %}" 
+                           class="bg-gradient-to-r from-cyber-blue to-cyber-pink text-white px-6 py-2 rounded-lg hover:from-cyber-pink hover:to-cyber-blue transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyber-blue">
+                            Request Withdrawal
+                        </a>
+                    {% else %}
+                        <p class="text-cyber-pink mb-4">Complete KYC verification to enable withdrawals.</p>
+                        <a href="{% url 'cases:kyc_verification' %}" 
+                           class="bg-gradient-to-r from-cyber-blue to-cyber-pink text-white px-6 py-2 rounded-lg hover:from-cyber-pink hover:to-cyber-blue transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-cyber-blue">
+                            Start KYC Verification
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+<!-- Recent Withdrawals -->
+<div class="mb-8">
+    <h2 class="text-2xl font-bold text-cyber-blue mb-4">Recent Withdrawals</h2>
+    <div class="bg-gray-800 rounded-lg border border-cyber-blue animate-[glow_4s_ease-in-out_infinite] overflow-x-auto">
+        <table class="w-full text-left">
+            <thead>
+                <tr class="border-b border-gray-700">
+                    <th class="p-4 text-cyber-blue">Date</th>
+                    <th class="p-4 text-cyber-blue">Amount</th>
+                    <th class="p-4 text-cyber-blue">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for withdrawal in recent_withdrawals %}
+                <tr class="border-b border-gray-700 hover:bg-gray-700 transition duration-200">
+                    <td class="p-4 text-cyber-blue">{{ withdrawal.created_at|date:"Y-m-d H:i" }}</td>
+                    <td class="p-4 text-cyber-green">{{ withdrawal.amount|currency_symbol:user.currency }}</td>
+                    <td class="p-4">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
+                            {% if withdrawal.status == 'pending' %}bg-blue-900 text-blue-200
+                            {% elif withdrawal.status == 'completed' %}bg-green-900 text-green-200
+                            {% else %}bg-red-900 text-red-200{% endif %}">
+                            {{ withdrawal.get_status_display }}
+                        </span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3" class="p-4 text-center text-gray-400">No recent withdrawals</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+            
         </div>
     </div>
 </div>
